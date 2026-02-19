@@ -11,8 +11,7 @@
   [_request]
   {:status 200
    :body {:status "healthy"
-          :timestamp (System/currentTimeMillis)}
-   :headers {"Content-Type" "application/json"}})
+          :timestamp (System/currentTimeMillis)}})
 
 ;; Greeting
 (defn greet
