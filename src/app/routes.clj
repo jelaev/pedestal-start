@@ -2,7 +2,7 @@
   (:require
    [io.pedestal.http.route.definition.table :as table]
    [app.interceptors :as interceptors]
-   [app.handles :as handlers]))
+   [app.handlers :as handlers]))
 
 
 (def common-interceptors
