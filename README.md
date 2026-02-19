@@ -1,5 +1,8 @@
 <p>Clone repository
   <code>git clone https://github.com/jelaev/pedestal-start.git [app-name]</code></p>
+<p><code>cd [app-name]</code></p>
+<p><code>rm -rf .git</code></p>
+<p><code>git init</code></p>
 
 <p>Run repl (cider board on): 
   <code>clj -M:nrepl</code></p>
