@@ -1,18 +1,29 @@
 (ns app.routes
   (:require
-   [app.handles :refer [main-interceptor simple-handler]]))
+   [io.pedestal.http.route.definition.table :as table]
+   [app.interceptors :as interceptors]
+   [app.handles :as handlers]))
+
+
+(def common-interceptors
+  [interceptors/timing-interceptor
+   interceptors/logging-interceptor
+   interceptors/cors-interceptor])
+
+(def api-interceptors
+  (conj common-interceptors
+        interceptors/json-content-type-interceptor))
+
 
 ;; Http routes can include interceptors
+;; for live reload in dev-mode need `hanler (syntax-quote)
 (def routes
-  #{["/" :get main-interceptor :route-name :main]
-    ;;["/meddocument" :post meddocument-interceptor :route-name :meddocument-new]
-    ;;["/simple" :post simple-interceptor :route-name :simple-interceptor-name]
-    })
-
-(def routes-dev
-  #{["/" :get `main-interceptor :route-name :main]
-    ["/simple" :get simple-handler]
-    ;;["/meddocument" :post `meddocument-interceptor :route-name :meddocument-new]
-    ;;["/simple" :post `simple-interceptor :route-name :simple-interceptor-name]
-    })
+  ;;Health
+  #{["/health" :get (conj common-interceptors `handlers/health-check)
+     :route-name :health]
+    ;;Greeting
+    ["/greet" :get (conj common-interceptors `handlers/greet)
+     :route-name :greet]
+    ["/echo" :post (conj api-interceptors `handlers/echo)
+     :route-name :echo]})
 
