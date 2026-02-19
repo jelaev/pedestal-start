@@ -19,10 +19,10 @@
 ;; for live reload in dev-mode need `hanler (syntax-quote)
 (def routes
   ;;Health
-  #{["/health" :get (conj common-interceptors `handlers/health-check)
+  #{["/health" :get (conj api-interceptors `handlers/health-check)
      :route-name :health]
     ;;Greeting
-    ["/greet" :get (conj common-interceptors `handlers/greet)
+    ["/greet" :get (conj api-interceptors `handlers/greet)
      :route-name :greet]
     ["/echo" :post (conj api-interceptors `handlers/echo)
      :route-name :echo]})
