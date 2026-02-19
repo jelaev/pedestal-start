@@ -1,9 +1,10 @@
-Clone repository
-  git clone https://github.com/jelaev/pedestal-start.git [app-name]
+<p>Clone repository
+  <code>git clone https://github.com/jelaev/pedestal-start.git [app-name]</code></p>
 
-Run repl (cider board on): 
-  clj -M:nrepl
-Then connect emacs/cider and load main buffer
-If you want onl run to see
-  clj -M:prod -m app.main
-  http://localhost:8030/health
+<p>Run repl (cider board on): 
+  <code>clj -M:nrepl</code></p>
+<p>Then connect emacs/cider and load main buffer</p>
+<p>If you want onl run to see
+  <code>clj -M:prod -m app.main</code>
+  go to
+  <code>http://localhost:8030/health</code></p>
