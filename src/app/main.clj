@@ -1,55 +1,57 @@
 (ns app.main
   (:require
-   [io.pedestal.http :as http]
-   [io.pedestal.http.route :as route]
-   [app.routes :refer [routes routes-dev]])
+   [io.pedestal.http.jetty :as jetty]
+   [io.pedestal.connector :as conn]
+   [io.pedestal.environment :as env]
+   [app.routes :refer [routes]])
   (:gen-class))
 
-;; If need open CORS
-(defn- allow-all-origins [_] true)
+;; Make connector
+(defn create-connector
+  "Make Jetty connector"
+  ([]
+   (create-connector 8030))
+  ([port]
+   (-> (conn/default-connector-map port)
+       (conn/with-default-interceptors)
+       (conn/optionally-with-dev-mode-interceptors)
+       (conn/with-routes routes)
+       (jetty/create-connector nil))))
 
-;; Def two maps, for develop and production
-(def service-dev-map
-  {::http/routes #(route/expand-routes routes-dev) ;; Add routes
-   ::http/type :jetty
-   ::http/allowed-origins {:creds true :allowed-origins allow-all-origins}
-   ::http/port 8030
-   ::http/join? false})
+;; Live cycle
 
-(def service-map
-  {::http/routes (route/expand-routes routes) ;; Add routes
-   ::http/type :jetty
-   ::http/port 8030
-   ::http/allowed-origins {:creds true :allowed-origins allow-all-origins}
-   ::http/host "0.0.0.0"
-   ::http/join? false})
-
-;; Start server and add default-interceptors from pedestal.io
-(defn service [service-map]
-  (-> service-map
-      (http/default-interceptors)
-      (http/create-server)))
-
-;; Entry poitn for start jar
-(defn -main [& args]
-  (http/start (service service-map
-                       )))
-
-;; All repl in development tools
-;; Set atom for server
 (defonce server (atom nil))
 
-;; Start server in dev environment
-(defn start-dev []
-  (reset! server
-          (http/start (service service-dev-map))))
+(defn start!
+  "Run server"
+  ([]
+   (start! 8030))
+  ([port]
+   (when-let [current @server]
+     (conn/stop! current))
+   (let [connector (create-connector port)]
+     (conn/start! connector)
+     (reset! server connector)
+     (println (str "Server started on http://localhost:" port))
+     connector)))
 
-;; Stop server in dev environment
-(defn stop-dev []
-  (http/stop @server)
-  (reset! server nil))
+(defn stop!
+  "Stops server"
+  []
+  (when-let [current @server]
+    (conn/stop! current)
+    (reset! server nil)
+    (println "Server stopped")))
 
-;; Restart server
-(defn restart []
-  (stop-dev)
-  (start-dev))
+(defn restart!
+  "Restart server"
+  ([]
+   (restart! 8030))
+  ([port]
+   (stop!)
+   (start! port)))
+
+(defn -main
+  [& args]
+  (let [port (or (some-> args first Integer/parseInt) 8030)]
+    (start! port)))
