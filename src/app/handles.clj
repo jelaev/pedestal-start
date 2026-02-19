@@ -1,4 +1,4 @@
-(ns app.handles
+(ns app.handlers
   (:require [io.pedestal.log :as log]))
 
 ;; Response template
