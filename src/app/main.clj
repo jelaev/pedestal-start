@@ -13,26 +13,27 @@
   {::http/routes #(route/expand-routes routes-dev) ;; Add routes
    ::http/type :jetty
    ::http/allowed-origins {:creds true :allowed-origins allow-all-origins}
-   ::http/port 8030})
+   ::http/port 8030
+   ::http/join? false})
 
 (def service-map
   {::http/routes (route/expand-routes routes) ;; Add routes
    ::http/type :jetty
    ::http/port 8030
    ::http/allowed-origins {:creds true :allowed-origins allow-all-origins}
-   ::http/host "0.0.0.0"})
+   ::http/host "0.0.0.0"
+   ::http/join? false})
 
 ;; Start server and add default-interceptors from pedestal.io
 (defn service [service-map]
   (-> service-map
       (http/default-interceptors)
-      (http/server)))
+      (http/create-server)))
 
 ;; Entry poitn for start jar
 (defn -main [& args]
-  (http/start (service
-               (assoc service-map
-                      ::http/join? false))))
+  (http/start (service service-map
+                       )))
 
 ;; All repl in development tools
 ;; Set atom for server
@@ -41,12 +42,12 @@
 ;; Start server in dev environment
 (defn start-dev []
   (reset! server
-          (http/start (service
-                       (assoc service-dev-map
-                              ::http/join? false)))))
+          (http/start (service service-dev-map))))
+
 ;; Stop server in dev environment
 (defn stop-dev []
-  (http/stop @server))
+  (http/stop @server)
+  (reset! server nil))
 
 ;; Restart server
 (defn restart []
