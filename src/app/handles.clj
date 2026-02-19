@@ -15,3 +15,7 @@
                                    :body (format "<h1>Started</h1><br/> %s" body)}))
        (catch Exception e
          (assoc context :response (response 500 (pr-str (.getMessage e) (.printStackTrace e)))))))})
+
+(defn simple-handler
+  [ctx]
+  (response 200 "Hello Simple"))
