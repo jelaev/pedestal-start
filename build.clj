@@ -1,3 +1,6 @@
+(ns build
+  (:require [clojure.tools.build.api :as b]))
+
 (def build-folder "target")
 
 (def jar-content (str build-folder "/classes"))
@@ -43,5 +46,5 @@
   (b/uber {:class-dir jar-content
            :uber-file uber-file-name
            :basis basis
-           :main 'app.main'})
+           :main 'app.main})
   (println (format "Uber file crated: \"%s\"" uber-file-name)))
