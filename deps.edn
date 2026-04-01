@@ -6,7 +6,7 @@
         base64-clj/base64-clj {:mvn/version "0.1.1"}
         clj-time/clj-time {:mvn/version "0.15.2"}}
  :aliases {:build {:deps {io.github.clojure/tools.build {:git/tag "v0.10.12", :git/sha "97c5562933a7f26b406650f955cd6358554a07f1"}}
-                   :ns-default :build}
+                   :ns-default build}
            :nrepl {:extra-deps {nrepl/nrepl {:mvn/version "1.5.2"}
                                 cider/cider-nrepl {:mvn/version "0.58.0"}
                                 refactor-nrepl/refactor-nrepl {:mvn/version "3.11.0"}}
